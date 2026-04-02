@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d0a0e" id="metaThemeColor">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Our Space 🌸</title>
+  <link rel="stylesheet" href="page2.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ✨ Floating petals background -->
+<div class="petals-container" id="petalsContainer"></div>
+
+<!-- 🌟 Ambient orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- 🌗 Theme toggle -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+  <span class="theme-icon" id="themeIcon">☀️</span>
+</button>
+
+<div class="container">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="header">
+    <div class="header-ornament">✦</div>
+    <h1 id="mainTitle">♥Gab & Clouie♥</h1>
+    <div class="header-sub" id="headerSub">Loading...</div>
+    <div class="header-ornament">✦</div>
+  </header>
+
+  <!-- ==================== STATS ROW ==================== -->
+  <div class="stats-row">
+    <div class="stat-pill" id="statMonths">— months</div>
+    <div class="stat-heart">♥</div>
+    <div class="stat-pill" id="statDays">— days together</div>
+    <div class="stat-heart">♥</div>
+    <div class="stat-pill" id="statNext">— days to monthsary</div>
+  </div>
+
+  <!-- ==================== COUNTDOWNS ==================== -->
+  <div class="countdowns-row">
+
+    <div class="countdown-card" id="monthsaryCard">
+      <div class="countdown-label">Next Monthsary</div>
+      <div class="countdown-date-text" id="monthsaryDateText"></div>
+      <div class="countdown-timer" id="monthsaryTimer">
+        <div class="countdown-unit"><span class="countdown-num" id="mDays">--</span><span class="countdown-unit-label">days</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="mHours">--</span><span class="countdown-unit-label">hrs</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="mMins">--</span><span class="countdown-unit-label">min</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="mSecs">--</span><span class="countdown-unit-label">sec</span></div>
+      </div>
+    </div>
+
+    <div class="countdown-divider">♥</div>
+
+    <div class="countdown-card gold" id="anniversaryCard">
+      <div class="countdown-label">1st Anniversary</div>
+      <div class="countdown-date-text">December 20, 2026</div>
+      <div class="countdown-timer" id="anniversaryTimer">
+        <div class="countdown-unit"><span class="countdown-num" id="aDays">--</span><span class="countdown-unit-label">days</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="aHours">--</span><span class="countdown-unit-label">hrs</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="aMins">--</span><span class="countdown-unit-label">min</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="aSecs">--</span><span class="countdown-unit-label">sec</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav">
+    <button class="nav-btn active" id="navLetters" onclick="openFolder('letters')">
+      <span class="nav-icon">💌</span>
+      <span class="nav-label">Letters</span>
+    </button>
+    <div class="nav-divider"></div>
+    <button class="nav-btn" id="navPhotos" onclick="openFolder('photos')">
+      <span class="nav-icon">🌸</span>
+      <span class="nav-label">Memories</span>
+    </button>
+  </nav>
+
+  <!-- ==================== SEARCH (Letters only) ==================== -->
+  <div class="search-wrap hidden" id="searchWrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search letters..." oninput="filterLetters()" />
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <!-- ==================== PHOTO TOOLBAR ==================== -->
+  <div class="photo-toolbar hidden" id="photoToolbar">
+    <button class="upload-btn" onclick="openUploadModal()">
+      <span>📷</span> Add Memory
+    </button>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)" />
+  </div>
+
+  <!-- ==================== CONTENT AREA ==================== -->
+  <div id="contentArea" class="content-area"></div>
+
+</div>
+
+<!-- ==================== UPLOAD MODAL ==================== -->
+<div id="uploadModal" class="modal hidden" onclick="handleUploadModalClick(event)">
+  <div class="modal-content upload-modal-content">
+    <button class="closeBtn" onclick="closeUploadModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-tag">New Memory</div>
+      <h2 id="uploadModalTitle">Add a Photo</h2>
+    </div>
+    <div class="modal-divider"><span>❧</span></div>
+
+    <!-- Drop zone -->
+    <div class="drop-zone" id="dropZone" onclick="openUploadModal()">
+      <div class="drop-zone-icon">🌸</div>
+      <div class="drop-zone-text">Tap to choose a photo</div>
+      <div class="drop-zone-sub">or drag and drop here</div>
+    </div>
+
+    <!-- Preview grid -->
+    <div class="upload-preview-grid" id="uploadPreviewGrid"></div>
+
+    <!-- Caption -->
+    <div class="caption-wrap" id="captionWrap" style="display:none">
+      <label class="caption-label">Caption (optional)</label>
+      <input type="text" class="caption-input" id="captionInput" placeholder="A memory worth keeping..." maxlength="120" />
+    </div>
+
+    <!-- Progress -->
+    <div class="upload-progress hidden" id="uploadProgress">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">Uploading...</div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="action-btn ghost" onclick="closeUploadModal()">Cancel</button>
+      <button class="action-btn primary" id="uploadConfirmBtn" onclick="confirmUpload()" style="display:none">Upload 🌸</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LETTER MODAL ==================== -->
+<div id="letterModal" class="modal hidden" onclick="handleModalClick(event)">
+  <div class="modal-content">
+    <button class="closeBtn" onclick="closeLetter()">✕</button>
+
+    <div class="modal-header">
+      <div class="modal-tag" id="modalTag">Letter</div>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDate"></p>
+    </div>
+
+    <div class="modal-divider">
+      <span>❧</span>
+    </div>
+
+    <div id="modalContent" class="modal-body"></div>
+
+    <div class="modal-footer">
+      <button class="action-btn ghost" id="renameBtn" onclick="renameLetter()">✏️ Rename</button>
+      <button class="action-btn primary" onclick="closeLetter()">Close</button>
+    </div>
+  </div>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="love.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<button id="musicToggle" onclick="toggleMusic()">🎵 Play Music</button>
+
+<!-- ==================== TOAST ==================== -->
+<div class="toast hidden" id="toast"></div>
+
+<script src="page3.js"></script>
+</body>
+</html>
