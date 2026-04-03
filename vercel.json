@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/letters",             "destination": "/api/get_letters.py" },
     { "source": "/add_letter",          "destination": "/api/add_letter.py" },
-    { "source": "/photos",             "destination": "/api/get_photos.py" },
+    { "source": "/photos",              "destination": "/api/get_photos.py" },
     { "source": "/upload_photo",        "destination": "/api/upload_photo.py" },
     { "source": "/delete_photo",        "destination": "/api/delete_photo.py" },
     { "source": "/rename_letter",       "destination": "/api/rename_letter.py" },
