@@ -1,9 +1,14 @@
 {
+  "functions": {
+    "api/**/*.js": {
+    "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
-    { "source": "/letters",       "destination": "/api/get_letters" },
-    { "source": "/photos",        "destination": "/api/get_photos" },
-    { "source": "/upload_photo",  "destination": "/api/upload_photo" },
-    { "source": "/delete_photo",  "destination": "/api/delete_photo" },
+    { "source": "/letters", "destination": "/api/get_letters" },
+    { "source": "/photos", "destination": "/api/get_photos" },
+    { "source": "/upload_photo", "destination": "/api/upload_photo" },
+    { "source": "/delete_photo", "destination": "/api/delete_photo" },
     { "source": "/rename_letter", "destination": "/api/rename_letter" }
   ]
 }
