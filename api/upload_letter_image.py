@@ -31,8 +31,8 @@ class handler(BaseHTTPRequestHandler):
             }
             form = cgi.FieldStorage(fp=io.BytesIO(body), environ=environ)
 
-            file_item  = form.getvalue("image")
-            letter_id  = form.getvalue("letter_id")
+            file_item = form.getvalue("image")
+            letter_id = form.getvalue("letter_id")
 
             if not file_item or not letter_id:
                 self._json(400, {"success": False, "error": "Missing image or letter_id"})
@@ -48,6 +48,7 @@ class handler(BaseHTTPRequestHandler):
             supabase.table("letters").update({"image_url": image_url}).eq("id", letter_id).execute()
 
             self._json(200, {"success": True, "image_url": image_url})
+
         except Exception as e:
             self._json(500, {"success": False, "error": str(e)})
 
@@ -65,3 +66,6 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        pass

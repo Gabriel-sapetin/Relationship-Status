@@ -17,8 +17,8 @@ class handler(BaseHTTPRequestHandler):
                 letters.append({
                     "filename":  str(row.get("id", "")),
                     "title":     row.get("title", "Untitled"),
-                    "date":      row.get("created_at", "")[:10],
-                    "content":   row.get("content", ""),
+                    "date":      (row.get("created_at", "") or "")[:10],
+                    "content":   row.get("content", "") or "",
                     "image_url": row.get("image_url", "") or ""
                 })
 

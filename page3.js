@@ -53,11 +53,11 @@ function timeTo(target) {
   if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0, done: true };
   const totalSecs = Math.floor(diff / 1000);
   return {
-    days: Math.floor(totalSecs / 86400),
+    days:  Math.floor(totalSecs / 86400),
     hours: Math.floor((totalSecs % 86400) / 3600),
-    mins: Math.floor((totalSecs % 3600) / 60),
-    secs: totalSecs % 60,
-    done: false
+    mins:  Math.floor((totalSecs % 3600) / 60),
+    secs:  totalSecs % 60,
+    done:  false
   };
 }
 
@@ -106,19 +106,19 @@ function updateAll() {
   document.getElementById("statNext").textContent = mT.done ? "Happy Monthsary! 🎉" : `${mT.days}d ${pad(mT.hours)}h left`;
 
   if (mT.secs !== lastMSecs) {
-    tickNum(document.getElementById("mDays"), pad(mT.days));
+    tickNum(document.getElementById("mDays"),  pad(mT.days));
     tickNum(document.getElementById("mHours"), pad(mT.hours));
-    tickNum(document.getElementById("mMins"), pad(mT.mins));
-    tickNum(document.getElementById("mSecs"), pad(mT.secs));
+    tickNum(document.getElementById("mMins"),  pad(mT.mins));
+    tickNum(document.getElementById("mSecs"),  pad(mT.secs));
     lastMSecs = mT.secs;
   }
 
   const aT = timeTo(anniversaryDate);
   if (aT.secs !== lastASecs) {
-    tickNum(document.getElementById("aDays"), pad(aT.days));
+    tickNum(document.getElementById("aDays"),  pad(aT.days));
     tickNum(document.getElementById("aHours"), pad(aT.hours));
-    tickNum(document.getElementById("aMins"), pad(aT.mins));
-    tickNum(document.getElementById("aSecs"), pad(aT.secs));
+    tickNum(document.getElementById("aMins"),  pad(aT.mins));
+    tickNum(document.getElementById("aSecs"),  pad(aT.secs));
     lastASecs = aT.secs;
   }
 
@@ -136,6 +136,7 @@ function setActiveNav(type) {
   document.getElementById("navLetters").classList.toggle("active", type === "letters");
   document.getElementById("navPhotos").classList.toggle("active", type === "photos");
   document.getElementById("searchWrap").classList.toggle("hidden", type !== "letters");
+  document.getElementById("letterToolbar").classList.toggle("hidden", type !== "letters");
   document.getElementById("photoToolbar").classList.toggle("hidden", type !== "photos");
   currentFolder = type;
 }
@@ -318,12 +319,63 @@ async function confirmUpload() {
   }, 900);
 }
 
+// ==================== WRITE LETTER MODAL ====================
+function openWriteModal() {
+  document.getElementById("writeTitle").value = "";
+  document.getElementById("writeContent").value = "";
+  document.getElementById("writeModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => document.getElementById("writeTitle").focus(), 100);
+}
+
+function closeWriteModal() {
+  document.getElementById("writeModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+function handleWriteModalClick(e) {
+  if (e.target === document.getElementById("writeModal")) closeWriteModal();
+}
+
+async function submitLetter() {
+  const title   = document.getElementById("writeTitle").value.trim();
+  const content = document.getElementById("writeContent").value.trim();
+
+  if (!title)   { showToast("Please add a title 💌"); return; }
+  if (!content) { showToast("Please write something 💌"); return; }
+
+  const btn = document.querySelector("#writeModal .action-btn.primary");
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/add_letter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, content })
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeWriteModal();
+      showToast("Letter sent 💌");
+      openFolder("letters");
+    } else {
+      showToast("Couldn't send letter ✗");
+    }
+  } catch {
+    showToast("Network error ✗");
+  } finally {
+    btn.textContent = "Send 💌";
+    btn.disabled = false;
+  }
+}
+
 // ==================== LETTERS ====================
 function renderLetters(letters) {
   const area = document.getElementById("contentArea");
   area.innerHTML = "";
   if (!letters.length) {
-    area.innerHTML = `<div class="empty-state">No letters found... write one! 💌</div>`;
+    area.innerHTML = `<div class="empty-state">No letters yet... write one! 💌</div>`;
     return;
   }
   letters.forEach((letter, i) => {
@@ -365,9 +417,8 @@ function openLetter(title, date, content, filename, image_url) {
   document.getElementById("modalDate").textContent = date;
   document.getElementById("modalContent").innerHTML = content.replace(/\n/g, "<br>");
 
-  // Show image if exists
   const imgWrap = document.getElementById("modalImageWrap");
-  const imgEl = document.getElementById("modalImage");
+  const imgEl   = document.getElementById("modalImage");
   if (image_url) {
     imgEl.src = image_url;
     imgWrap.classList.remove("hidden");
@@ -390,7 +441,7 @@ function handleModalClick(e) {
 }
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeLetter(); closeLightbox(); }
+  if (e.key === "Escape") { closeLetter(); closeLightbox(); closeWriteModal(); }
 });
 
 function renameLetter() {
@@ -437,12 +488,11 @@ async function uploadLetterImage(e) {
     const data = await res.json();
     if (data.success) {
       const imgWrap = document.getElementById("modalImageWrap");
-      const imgEl = document.getElementById("modalImage");
+      const imgEl   = document.getElementById("modalImage");
       imgEl.src = data.image_url;
       imgWrap.classList.remove("hidden");
       currentLetterImageUrl = data.image_url;
       showToast("Image attached 🌸");
-      // Refresh letters list in background
       fetch("/letters").then(r => r.json()).then(d => { allLetters = d; });
     } else {
       showToast("Upload failed ✗");
@@ -481,17 +531,17 @@ function showToast(msg) {
 
 function escHtml(str) {
   return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 // ==================== INIT ====================
 openFolder("letters");
 
 // ==================== MUSIC ====================
-const music = document.getElementById("bgMusic");
+const music    = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicToggle");
 let musicPlaying = false;
 

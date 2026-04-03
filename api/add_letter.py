@@ -13,15 +13,18 @@ class handler(BaseHTTPRequestHandler):
             body = self.rfile.read(content_length)
             payload = json.loads(body)
 
-            letter_id = payload.get("filename", "").strip()
-            new_title = payload.get("new_title", "").strip()
+            title   = payload.get("title", "").strip()
+            content = payload.get("content", "").strip()
 
-            if not letter_id or not new_title:
-                self._json(400, {"success": False, "error": "Missing fields"})
+            if not title or not content:
+                self._json(400, {"success": False, "error": "Title and content are required"})
                 return
 
             supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-            supabase.table("letters").update({"title": new_title}).eq("id", letter_id).execute()
+            supabase.table("letters").insert({
+                "title":   title,
+                "content": content
+            }).execute()
 
             self._json(200, {"success": True})
 
