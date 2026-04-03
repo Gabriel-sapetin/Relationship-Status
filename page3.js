@@ -9,13 +9,9 @@ function applyTheme(theme, animate = true) {
   const icon = document.getElementById("themeIcon");
   if (icon) icon.textContent = theme === "light" ? "🌙" : "☀️";
   localStorage.setItem("theme", theme);
-
   const metaTheme = document.getElementById("metaThemeColor");
   if (metaTheme) metaTheme.content = theme === "light" ? "#faf6f0" : "#0d0a0e";
-
-  if (animate) {
-    document.body.style.transition = "background 0.4s ease, color 0.4s ease";
-  }
+  if (animate) document.body.style.transition = "background 0.4s ease, color 0.4s ease";
 }
 
 function toggleTheme() {
@@ -26,6 +22,7 @@ function toggleTheme() {
 // ==================== CONFIG ====================
 const startDate = new Date("2025-12-20");
 let currentLetterFilename = "";
+let currentLetterImageUrl = "";
 let allLetters = [];
 let currentFolder = "letters";
 
@@ -35,7 +32,6 @@ let currentFolder = "letters";
   const petals = ["🌸", "🌺", "✿", "❀", "🌷", "·", "∘"];
   const isMobile = window.innerWidth <= 480;
   const count = isMobile ? 10 : 22;
-
   for (let i = 0; i < count; i++) {
     const p = document.createElement("div");
     p.className = "petal";
@@ -73,7 +69,7 @@ function tickNum(el, val) {
   setTimeout(() => el.classList.remove("tick"), 200);
 }
 
-// ==================== NEXT MONTHSARY DATE ====================
+// ==================== NEXT MONTHSARY ====================
 function getNextMonthsary() {
   const now = new Date();
   let y = now.getFullYear(), m = now.getMonth();
@@ -95,7 +91,6 @@ let lastMSecs = -1, lastASecs = -1;
 function updateAll() {
   const now = new Date();
   const diff = now - startDate;
-
   const totalDays = Math.floor(diff / 864e5);
   const months = Math.floor(totalDays / 30);
   const remainingDays = totalDays % 30;
@@ -106,7 +101,6 @@ function updateAll() {
 
   const nextM = getNextMonthsary();
   const mT = timeTo(nextM);
-
   const mLabel = nextM.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   document.getElementById("monthsaryDateText").textContent = mT.done ? "Happy Monthsary! 🎉" : mLabel;
   document.getElementById("statNext").textContent = mT.done ? "Happy Monthsary! 🎉" : `${mT.days}d ${pad(mT.hours)}h left`;
@@ -129,14 +123,15 @@ function updateAll() {
   }
 
   if (aT.done) {
-    document.getElementById("anniversaryCard").querySelector(".countdown-date-text").textContent = "Happy Anniversary! 🥂";
+    document.getElementById("anniversaryCard")
+      .querySelector(".countdown-date-text").textContent = "Happy Anniversary! 🥂";
   }
 }
 
 updateAll();
 setInterval(updateAll, 1000);
 
-// ==================== NAV SWITCHING ====================
+// ==================== NAV ====================
 function setActiveNav(type) {
   document.getElementById("navLetters").classList.toggle("active", type === "letters");
   document.getElementById("navPhotos").classList.toggle("active", type === "photos");
@@ -158,7 +153,7 @@ function openFolder(type) {
   if (type === "photos") loadPhotos();
 }
 
-// ==================== LOAD PHOTOS ====================
+// ==================== PHOTOS ====================
 function loadPhotos() {
   const area = document.getElementById("contentArea");
   area.innerHTML = `<div class="empty-state">Loading...</div>`;
@@ -270,7 +265,6 @@ function removePending(buttonEl) {
   }
 }
 
-// Drag and drop
 document.addEventListener("DOMContentLoaded", () => {
   const dz = document.getElementById("dropZone");
   if (!dz) return;
@@ -283,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ==================== CONFIRM UPLOAD ====================
 async function confirmUpload() {
   if (!pendingFiles.length) return;
   const caption = document.getElementById("captionInput").value.trim();
@@ -297,8 +290,7 @@ async function confirmUpload() {
   btn.textContent = "Uploading...";
 
   let uploaded = 0, failed = 0;
-
-  const filesToUpload = [...pendingFiles]; // copy and avoid mutation issues
+  const filesToUpload = [...pendingFiles];
   pendingFiles = [];
 
   for (let i = 0; i < filesToUpload.length; i++) {
@@ -330,19 +322,15 @@ async function confirmUpload() {
 function renderLetters(letters) {
   const area = document.getElementById("contentArea");
   area.innerHTML = "";
-
   if (!letters.length) {
     area.innerHTML = `<div class="empty-state">No letters found... write one! 💌</div>`;
     return;
   }
-
   letters.forEach((letter, i) => {
     const div = document.createElement("div");
     div.className = "item";
     div.style.animationDelay = (i * 0.07) + "s";
-
     const preview = letter.content.replace(/<[^>]*>/g, "").substring(0, 80).trim();
-
     div.innerHTML = `
       <div class="item-number">Letter No. ${i + 1}</div>
       <h3>${escHtml(letter.title)}</h3>
@@ -352,11 +340,9 @@ function renderLetters(letters) {
         <span class="read-more">Read →</span>
       </div>
     `;
-
     div.addEventListener("click", () =>
-      openLetter(letter.title, letter.date, letter.content, letter.filename)
+      openLetter(letter.title, letter.date, letter.content, letter.filename, letter.image_url)
     );
-
     area.appendChild(div);
   });
 }
@@ -364,7 +350,6 @@ function renderLetters(letters) {
 function filterLetters() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   if (!q) { renderLetters(allLetters); return; }
-
   const filtered = allLetters.filter(l =>
     l.title.toLowerCase().includes(q) ||
     l.content.toLowerCase().includes(q) ||
@@ -373,11 +358,24 @@ function filterLetters() {
   renderLetters(filtered);
 }
 
-function openLetter(title, date, content, filename) {
+function openLetter(title, date, content, filename, image_url) {
   currentLetterFilename = filename;
+  currentLetterImageUrl = image_url || "";
   document.getElementById("modalTitle").textContent = title;
   document.getElementById("modalDate").textContent = date;
   document.getElementById("modalContent").innerHTML = content.replace(/\n/g, "<br>");
+
+  // Show image if exists
+  const imgWrap = document.getElementById("modalImageWrap");
+  const imgEl = document.getElementById("modalImage");
+  if (image_url) {
+    imgEl.src = image_url;
+    imgWrap.classList.remove("hidden");
+  } else {
+    imgEl.src = "";
+    imgWrap.classList.add("hidden");
+  }
+
   document.getElementById("letterModal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
 }
@@ -392,13 +390,12 @@ function handleModalClick(e) {
 }
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeLetter();
+  if (e.key === "Escape") { closeLetter(); closeLightbox(); }
 });
 
 function renameLetter() {
   const newTitle = prompt("Enter a new title for this letter:");
   if (!newTitle || !newTitle.trim()) return;
-
   fetch("/rename_letter", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -417,6 +414,60 @@ function renameLetter() {
     .catch(() => showToast("Network error ✗"));
 }
 
+// ==================== LETTER IMAGE UPLOAD ====================
+function triggerLetterImageUpload() {
+  document.getElementById("letterImageInput").click();
+}
+
+async function uploadLetterImage(e) {
+  const file = e.target.files[0];
+  if (!file || !currentLetterFilename) return;
+  e.target.value = "";
+
+  const btn = document.getElementById("attachImgBtn");
+  btn.textContent = "⏳ Uploading...";
+  btn.disabled = true;
+
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("letter_id", currentLetterFilename);
+
+  try {
+    const res = await fetch("/upload_letter_image", { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.success) {
+      const imgWrap = document.getElementById("modalImageWrap");
+      const imgEl = document.getElementById("modalImage");
+      imgEl.src = data.image_url;
+      imgWrap.classList.remove("hidden");
+      currentLetterImageUrl = data.image_url;
+      showToast("Image attached 🌸");
+      // Refresh letters list in background
+      fetch("/letters").then(r => r.json()).then(d => { allLetters = d; });
+    } else {
+      showToast("Upload failed ✗");
+    }
+  } catch {
+    showToast("Network error ✗");
+  } finally {
+    btn.innerHTML = "🖼️ Attach Image";
+    btn.disabled = false;
+  }
+}
+
+// ==================== LIGHTBOX ====================
+function openLightbox(src) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("letterImageLightbox").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  document.getElementById("letterImageLightbox").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+// ==================== TOAST ====================
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -439,40 +490,36 @@ function escHtml(str) {
 // ==================== INIT ====================
 openFolder("letters");
 
+// ==================== MUSIC ====================
 const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicToggle");
 let musicPlaying = false;
 
-function toggleMusic() {
-  if (!musicPlaying) {
-    music.play().then(() => {
-      musicBtn.textContent = "⏸ Pause Music";
-      musicPlaying = true;
-    }).catch(() => {
-      showToast("Click anywhere to enable music 🎵");
-    });
-  } else {
-    music.pause();
-    musicBtn.textContent = "🎵 Play Music";
-    musicPlaying = false;
-  }
+function setMusicUI(playing) {
+  musicPlaying = playing;
+  musicBtn.innerHTML = playing
+    ? `<span class="music-icon">♪</span> Pause`
+    : `<span class="music-icon">♪</span> Music`;
+  musicBtn.classList.toggle("playing", playing);
 }
 
-function fadeOutMusic() {
-  let vol = music.volume;
-  const fade = setInterval(() => {
-    vol -= 0.05;
-    if (vol <= 0) { music.pause(); clearInterval(fade); }
-    music.volume = Math.max(vol, 0);
-  }, 100);
+function toggleMusic() {
+  if (!musicPlaying) {
+    music.play()
+      .then(() => setMusicUI(true))
+      .catch(() => showToast("Tap anywhere to enable music 🎵"));
+  } else {
+    music.pause();
+    setMusicUI(false);
+  }
 }
 
 document.addEventListener("click", function initMusicOnce() {
   if (!musicPlaying) {
-    music.play().catch(() => {});
-    musicPlaying = true;
     music.volume = 0.7;
-    musicBtn.textContent = "⏸ Pause Music";
+    music.play().then(() => setMusicUI(true)).catch(() => {});
   }
   document.removeEventListener("click", initMusicOnce);
 }, { once: true });
+
+setMusicUI(false);

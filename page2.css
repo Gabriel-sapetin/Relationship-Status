@@ -1259,3 +1259,77 @@ h1 {
   text-align: center;
   letter-spacing: 0.04em;
 }
+
+/* ==================== MUSIC BUTTON ==================== */
+#musicToggle {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: linear-gradient(135deg, var(--rose-deep), var(--rose));
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(201, 97, 126, 0.4), var(--glow-rose);
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+#musicToggle:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 32px rgba(201, 97, 126, 0.55), var(--glow-rose);
+}
+
+#musicToggle:active {
+  transform: scale(0.96);
+}
+
+/* Spinning note icon when playing */
+#musicToggle .music-icon {
+  display: inline-block;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+#musicToggle.playing .music-icon {
+  animation: spinNote 3s linear infinite;
+}
+
+@keyframes spinNote {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Pulsing glow ring when playing */
+#musicToggle.playing {
+  box-shadow: 0 4px 24px rgba(201, 97, 126, 0.5),
+              0 0 0 4px rgba(201, 97, 126, 0.15),
+              var(--glow-rose);
+}
+
+/* Light mode adjustments */
+body.light #musicToggle {
+  box-shadow: 0 4px 24px rgba(180, 80, 110, 0.3);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  #musicToggle {
+    bottom: 20px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
