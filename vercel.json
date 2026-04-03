@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.12"
-    }
-  },
   "rewrites": [
     { "source": "/letters", "destination": "/api/get_letters.py" },
     { "source": "/photos", "destination": "/api/get_photos.py" },
