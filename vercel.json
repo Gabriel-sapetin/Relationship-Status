@@ -1,11 +1,11 @@
 {
   "rewrites": [
-    { "source": "/letters",             "destination": "/api/get_letters.py" },
-    { "source": "/add_letter",          "destination": "/api/add_letter.py" },
-    { "source": "/photos",              "destination": "/api/get_photos.py" },
-    { "source": "/upload_photo",        "destination": "/api/upload_photo.py" },
-    { "source": "/delete_photo",        "destination": "/api/delete_photo.py" },
-    { "source": "/rename_letter",       "destination": "/api/rename_letter.py" },
-    { "source": "/upload_letter_image", "destination": "/api/upload_letter_image.py" }
+    { "source": "/letters",             "destination": "/api/get_letters" },
+    { "source": "/add_letter",          "destination": "/api/add_letter" },
+    { "source": "/photos",              "destination": "/api/get_photos" },
+    { "source": "/upload_photo",        "destination": "/api/upload_photo" },
+    { "source": "/delete_photo",        "destination": "/api/delete_photo" },
+    { "source": "/rename_letter",       "destination": "/api/rename_letter" },
+    { "source": "/upload_letter_image", "destination": "/api/upload_letter_image" }
   ]
 }
