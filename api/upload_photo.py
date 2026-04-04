@@ -34,11 +34,13 @@ class handler(BaseHTTPRequestHandler):
                 self._json(400, {"success": False, "error": "No photo"})
                 return
 
+            # Save caption in Cloudinary context metadata
             result = cloudinary.uploader.upload(
                 io.BytesIO(file_item) if isinstance(file_item, bytes) else file_item,
-                context=f"caption={caption_val}"
+                context={"caption": caption_val}
             )
             self._json(200, {"success": True, "url": result["secure_url"]})
+
         except Exception as e:
             self._json(500, {"success": False, "error": str(e)})
 
@@ -56,3 +58,6 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        pass

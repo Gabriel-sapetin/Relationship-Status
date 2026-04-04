@@ -89,21 +89,23 @@ const anniversaryDate = new Date("2026-12-20T00:00:00");
 let lastMSecs = -1, lastASecs = -1;
 
 function updateAll() {
-  const now = new Date();
+  const now  = new Date();
   const diff = now - startDate;
-  const totalDays = Math.floor(diff / 864e5);
-  const months = Math.floor(totalDays / 30);
+  const totalDays    = Math.floor(diff / 864e5);
+  const months       = Math.floor(totalDays / 30);
   const remainingDays = totalDays % 30;
 
   document.getElementById("statMonths").textContent = `${months} months`;
-  document.getElementById("statDays").textContent = `${remainingDays} days together`;
-  document.getElementById("headerSub").textContent = `${totalDays} days of loving you ♥`;
+  document.getElementById("statDays").textContent   = `${remainingDays} days together`;
+  document.getElementById("headerSub").textContent  = `${totalDays} days of loving you ♥`;
 
-  const nextM = getNextMonthsary();
-  const mT = timeTo(nextM);
+  const nextM  = getNextMonthsary();
+  const mT     = timeTo(nextM);
   const mLabel = nextM.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  document.getElementById("monthsaryDateText").textContent = mT.done ? "Happy Monthsary! 🎉" : mLabel;
-  document.getElementById("statNext").textContent = mT.done ? "Happy Monthsary! 🎉" : `${mT.days}d ${pad(mT.hours)}h left`;
+  document.getElementById("monthsaryDateText").textContent =
+    mT.done ? "Happy Monthsary! 🎉" : mLabel;
+  document.getElementById("statNext").textContent =
+    mT.done ? "Happy Monthsary! 🎉" : `${mT.days}d ${pad(mT.hours)}h left`;
 
   if (mT.secs !== lastMSecs) {
     tickNum(document.getElementById("mDays"),  pad(mT.days));
@@ -173,7 +175,7 @@ function loadPhotos() {
         div.innerHTML = `
           <button class="photo-delete-btn" onclick="deletePhoto('${escHtml(photo.filename)}', event)" title="Delete">✕</button>
           <img src="${escHtml(photo.url)}" alt="${escHtml(photo.caption)}" loading="lazy" />
-          <p class="photo-caption">${escHtml(photo.caption)}</p>
+          <p class="photo-caption">${escHtml(photo.caption) || "&nbsp;"}</p>
         `;
         area.appendChild(div);
       });
@@ -282,9 +284,9 @@ async function confirmUpload() {
   if (!pendingFiles.length) return;
   const caption = document.getElementById("captionInput").value.trim();
   const progress = document.getElementById("uploadProgress");
-  const fill = document.getElementById("progressFill");
-  const pText = document.getElementById("progressText");
-  const btn = document.getElementById("uploadConfirmBtn");
+  const fill     = document.getElementById("progressFill");
+  const pText    = document.getElementById("progressText");
+  const btn      = document.getElementById("uploadConfirmBtn");
 
   progress.classList.remove("hidden");
   btn.disabled = true;
@@ -297,11 +299,12 @@ async function confirmUpload() {
   for (let i = 0; i < filesToUpload.length; i++) {
     const formData = new FormData();
     formData.append("photo", filesToUpload[i]);
+    // Use caption for all photos in this batch, or fallback to filename
     formData.append("caption", caption || filesToUpload[i].name.replace(/\.[^.]+$/, ""));
     pText.textContent = `Uploading ${i + 1} of ${filesToUpload.length}...`;
     fill.style.width = ((i / filesToUpload.length) * 100) + "%";
     try {
-      const res = await fetch("/upload_photo", { method: "POST", body: formData });
+      const res  = await fetch("/upload_photo", { method: "POST", body: formData });
       const data = await res.json();
       if (data.success) uploaded++; else failed++;
     } catch { failed++; }
@@ -321,7 +324,7 @@ async function confirmUpload() {
 
 // ==================== WRITE LETTER MODAL ====================
 function openWriteModal() {
-  document.getElementById("writeTitle").value = "";
+  document.getElementById("writeTitle").value   = "";
   document.getElementById("writeContent").value = "";
   document.getElementById("writeModal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
@@ -340,7 +343,6 @@ function handleWriteModalClick(e) {
 async function submitLetter() {
   const title   = document.getElementById("writeTitle").value.trim();
   const content = document.getElementById("writeContent").value.trim();
-
   if (!title)   { showToast("Please add a title 💌"); return; }
   if (!content) { showToast("Please write something 💌"); return; }
 
@@ -349,7 +351,7 @@ async function submitLetter() {
   btn.disabled = true;
 
   try {
-    const res = await fetch("/add_letter", {
+    const res  = await fetch("/add_letter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content })
@@ -413,9 +415,9 @@ function filterLetters() {
 function openLetter(title, date, content, filename, image_url) {
   currentLetterFilename = filename;
   currentLetterImageUrl = image_url || "";
-  document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalDate").textContent = date;
-  document.getElementById("modalContent").innerHTML = content.replace(/\n/g, "<br>");
+  document.getElementById("modalTitle").textContent  = title;
+  document.getElementById("modalDate").textContent   = date;
+  document.getElementById("modalContent").innerHTML  = content.replace(/\n/g, "<br>");
 
   const imgWrap = document.getElementById("modalImageWrap");
   const imgEl   = document.getElementById("modalImage");
@@ -465,6 +467,27 @@ function renameLetter() {
     .catch(() => showToast("Network error ✗"));
 }
 
+// ==================== DELETE LETTER ====================
+function deleteLetter() {
+  if (!confirm("Delete this letter forever? 💔")) return;
+  fetch("/delete_letter", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: currentLetterFilename })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        closeLetter();
+        showToast("Letter deleted 💔");
+        openFolder("letters");
+      } else {
+        showToast("Couldn't delete ✗");
+      }
+    })
+    .catch(() => showToast("Network error ✗"));
+}
+
 // ==================== LETTER IMAGE UPLOAD ====================
 function triggerLetterImageUpload() {
   document.getElementById("letterImageInput").click();
@@ -484,7 +507,7 @@ async function uploadLetterImage(e) {
   formData.append("letter_id", currentLetterFilename);
 
   try {
-    const res = await fetch("/upload_letter_image", { method: "POST", body: formData });
+    const res  = await fetch("/upload_letter_image", { method: "POST", body: formData });
     const data = await res.json();
     if (data.success) {
       const imgWrap = document.getElementById("modalImageWrap");
