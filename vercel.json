@@ -8,6 +8,9 @@
     { "source": "/upload_photo",        "destination": "/api/upload_photo" },
     { "source": "/delete_photo",        "destination": "/api/delete_photo" },
     { "source": "/rename_letter",       "destination": "/api/rename_letter" },
-    { "source": "/upload_letter_image", "destination": "/api/upload_letter_image" }
+    { "source": "/upload_letter_image", "destination": "/api/upload_letter_image" },
+    { "source": "/bucket",              "destination": "/api/get_bucket" },
+    { "source": "/add_bucket",          "destination": "/api/add_bucket" },
+    { "source": "/update_bucket",       "destination": "/api/update_bucket" }
   ]
 }
