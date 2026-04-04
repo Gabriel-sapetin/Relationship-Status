@@ -35,7 +35,7 @@
   <!-- ==================== HEADER ==================== -->
   <header class="header">
     <div class="header-ornament">✦</div>
-    <h1 id="mainTitle">♥Gab & Clouie♥</h1>
+    <h1 id="mainTitle">♥Gabriel & Clouie♥</h1>
     <div class="header-sub" id="headerSub">Loading...</div>
     <div class="header-ornament">✦</div>
   </header>
@@ -85,7 +85,7 @@
   <!-- ==================== BIRTHDAY COUNTDOWNS ==================== -->
   <div class="countdowns-row" id="birthdayRow">
     <div class="countdown-card birthday" id="gabBdayCard">
-      <div class="countdown-label">🎂 Gab's Birthday</div>
+      <div class="countdown-label">Gab's Birthday</div>
       <div class="countdown-date-text" id="gabBdayDate"></div>
       <div class="countdown-timer">
         <div class="countdown-unit"><span class="countdown-num" id="gb1">--</span><span class="countdown-unit-label">days</span></div>
@@ -101,7 +101,7 @@
     <div class="countdown-divider">🎂</div>
 
     <div class="countdown-card birthday" id="clouieBdayCard">
-      <div class="countdown-label">🎂 Clouie's Birthday</div>
+      <div class="countdown-label">Clouie's Birthday</div>
       <div class="countdown-date-text" id="clouieBdayDate"></div>
       <div class="countdown-timer">
         <div class="countdown-unit"><span class="countdown-num" id="cb1">--</span><span class="countdown-unit-label">days</span></div>
@@ -164,7 +164,7 @@
     <button class="closeBtn" onclick="closeWriteModal()">✕</button>
     <div class="modal-header">
       <div class="modal-tag" id="writeModalTag">New Letter</div>
-      <h2 id="writeModalHeading">Write a Letter 💌</h2>
+      <h2 id="writeModalHeading">Write a Letter</h2>
     </div>
     <div class="modal-divider"><span>❧</span></div>
     <div style="display:flex; flex-direction:column; gap:16px;">
@@ -198,8 +198,8 @@
     <div class="modal-divider"><span>❧</span></div>
     <div class="drop-zone" id="dropZone" onclick="openUploadModal()">
       <div class="drop-zone-icon">🌸</div>
-      <div class="drop-zone-text">Tap to choose a photo</div>
-      <div class="drop-zone-sub">or drag and drop here</div>
+      <div class="drop-zone-text">Drag a photo here</div>
+      <div class="drop-zone-sub">my baby, hehe</div>
     </div>
     <div class="upload-preview-grid" id="uploadPreviewGrid"></div>
     <div class="caption-wrap" id="captionWrap" style="display:none">
@@ -232,9 +232,9 @@
       <img id="modalImage" src="" alt="Letter image" onclick="openLightbox(this.src)" />
     </div>
     <div class="modal-footer">
-      <button class="action-btn danger" onclick="deleteLetter()">🗑️</button>
-      <button class="action-btn ghost" onclick="openEditModal()">✏️ Edit</button>
-      <button class="action-btn ghost" id="attachImgBtn" onclick="triggerLetterImageUpload()">🖼️ Image</button>
+      <button class="action-btn danger" onclick="deleteLetter()">Delete</button>
+      <button class="action-btn ghost" onclick="openEditModal()">Edit</button>
+      <button class="action-btn ghost" id="attachImgBtn" onclick="triggerLetterImageUpload()">Upload Image</button>
       <input type="file" id="letterImageInput" accept="image/*" style="display:none" onchange="uploadLetterImage(event)" />
       <button class="action-btn primary" onclick="closeLetter()">Close</button>
     </div>
