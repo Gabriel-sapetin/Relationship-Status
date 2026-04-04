@@ -14,7 +14,6 @@
 <body>
 
 <div class="petals-container" id="petalsContainer"></div>
-
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
@@ -25,6 +24,15 @@
 
 <div class="container">
 
+  <!-- ==================== DAILY LOVE NOTE ==================== -->
+  <div class="love-note-wrap" id="loveNoteWrap">
+    <div class="love-note-inner">
+      <span class="love-note-icon">💭</span>
+      <p class="love-note-text" id="loveNoteText"></p>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
   <header class="header">
     <div class="header-ornament">✦</div>
     <h1 id="mainTitle">♥Gab & Clouie♥</h1>
@@ -32,6 +40,7 @@
     <div class="header-ornament">✦</div>
   </header>
 
+  <!-- ==================== STATS ROW ==================== -->
   <div class="stats-row">
     <div class="stat-pill" id="statMonths">— months</div>
     <div class="stat-heart">♥</div>
@@ -40,6 +49,7 @@
     <div class="stat-pill" id="statNext">— days to monthsary</div>
   </div>
 
+  <!-- ==================== COUNTDOWNS ==================== -->
   <div class="countdowns-row">
     <div class="countdown-card" id="monthsaryCard">
       <div class="countdown-label">Next Monthsary</div>
@@ -72,6 +82,40 @@
     </div>
   </div>
 
+  <!-- ==================== BIRTHDAY COUNTDOWNS ==================== -->
+  <div class="countdowns-row" id="birthdayRow">
+    <div class="countdown-card birthday" id="gabBdayCard">
+      <div class="countdown-label">🎂 Gab's Birthday</div>
+      <div class="countdown-date-text" id="gabBdayDate"></div>
+      <div class="countdown-timer">
+        <div class="countdown-unit"><span class="countdown-num" id="gb1">--</span><span class="countdown-unit-label">days</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="gb2">--</span><span class="countdown-unit-label">hrs</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="gb3">--</span><span class="countdown-unit-label">min</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="gb4">--</span><span class="countdown-unit-label">sec</span></div>
+      </div>
+    </div>
+
+    <div class="countdown-divider">🎂</div>
+
+    <div class="countdown-card birthday" id="clouieBdayCard">
+      <div class="countdown-label">🎂 Clouie's Birthday</div>
+      <div class="countdown-date-text" id="clouieBdayDate"></div>
+      <div class="countdown-timer">
+        <div class="countdown-unit"><span class="countdown-num" id="cb1">--</span><span class="countdown-unit-label">days</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cb2">--</span><span class="countdown-unit-label">hrs</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cb3">--</span><span class="countdown-unit-label">min</span></div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cb4">--</span><span class="countdown-unit-label">sec</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NAV ==================== -->
   <nav class="nav">
     <button class="nav-btn active" id="navLetters" onclick="openFolder('letters')">
       <span class="nav-icon">💌</span>
@@ -82,19 +126,27 @@
       <span class="nav-icon">🌸</span>
       <span class="nav-label">Memories</span>
     </button>
+    <div class="nav-divider"></div>
+    <button class="nav-btn" id="navTimeline" onclick="openFolder('timeline')">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Timeline</span>
+    </button>
   </nav>
 
+  <!-- ==================== SEARCH ==================== -->
   <div class="search-wrap hidden" id="searchWrap">
     <input type="text" class="search-input" id="searchInput" placeholder="Search letters..." oninput="filterLetters()" />
     <span class="search-icon">🔍</span>
   </div>
 
+  <!-- ==================== LETTER TOOLBAR ==================== -->
   <div class="photo-toolbar hidden" id="letterToolbar">
     <button class="upload-btn" onclick="openWriteModal()">
       <span>💌</span> Write Letter
     </button>
   </div>
 
+  <!-- ==================== PHOTO TOOLBAR ==================== -->
   <div class="photo-toolbar hidden" id="photoToolbar">
     <button class="upload-btn" onclick="openUploadModal()">
       <span>📷</span> Add Memory
@@ -111,15 +163,14 @@
   <div class="modal-content upload-modal-content" style="max-width:620px;">
     <button class="closeBtn" onclick="closeWriteModal()">✕</button>
     <div class="modal-header">
-      <div class="modal-tag">New Letter</div>
-      <h2>Write a Letter 💌</h2>
+      <div class="modal-tag" id="writeModalTag">New Letter</div>
+      <h2 id="writeModalHeading">Write a Letter 💌</h2>
     </div>
     <div class="modal-divider"><span>❧</span></div>
     <div style="display:flex; flex-direction:column; gap:16px;">
       <div class="caption-wrap">
         <label class="caption-label">Title</label>
-        <input type="text" class="caption-input" id="writeTitle"
-          placeholder="My dearest..." maxlength="120" />
+        <input type="text" class="caption-input" id="writeTitle" placeholder="My dearest..." maxlength="120" />
       </div>
       <div class="caption-wrap">
         <label class="caption-label">Letter</label>
@@ -131,7 +182,7 @@
     </div>
     <div class="modal-footer">
       <button class="action-btn ghost" onclick="closeWriteModal()">Cancel</button>
-      <button class="action-btn primary" onclick="submitLetter()">Send 💌</button>
+      <button class="action-btn primary" id="writeSubmitBtn" onclick="submitLetter()">Send 💌</button>
     </div>
   </div>
 </div>
@@ -181,8 +232,9 @@
       <img id="modalImage" src="" alt="Letter image" onclick="openLightbox(this.src)" />
     </div>
     <div class="modal-footer">
-      <button class="action-btn ghost" id="renameBtn" onclick="renameLetter()">✏️ Rename</button>
-      <button class="action-btn ghost" id="attachImgBtn" onclick="triggerLetterImageUpload()">🖼️ Attach Image</button>
+      <button class="action-btn danger" onclick="deleteLetter()">🗑️</button>
+      <button class="action-btn ghost" onclick="openEditModal()">✏️ Edit</button>
+      <button class="action-btn ghost" id="attachImgBtn" onclick="triggerLetterImageUpload()">🖼️ Image</button>
       <input type="file" id="letterImageInput" accept="image/*" style="display:none" onchange="uploadLetterImage(event)" />
       <button class="action-btn primary" onclick="closeLetter()">Close</button>
     </div>
@@ -207,7 +259,6 @@
 </button>
 
 <div class="toast hidden" id="toast"></div>
-
 <script src="page3.js"></script>
 </body>
 </html>
